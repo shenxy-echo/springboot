@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 指定工作空间，要与接口名相同，源代码没有去看，猜测应该是通过"这里的namespace.下边方法的id"来定位方法的 -->
+<mapper namespace="com.shenxy.springboot.mapper.UserMapper">
+
+    <resultMap id="userMap" type="com.shenxy.springboot.pojo.User">
+        <id property="id" column="id"/>
+        <result property="userName" column="user_name"/>
+    </resultMap>
+
+    <!-- insert user -->
+    <insert id = "insert" parameterType="com.shenxy.springboot.pojo.User">
+          insert into tb_user(id, user_name, password, name, age, sex, birthday, created, updated)
+        values(null, #{userName}, #{password}, #{name}, #{age}, #{sex}, #{birthday}, now(), now())
+     </insert>
+
+    <!-- update user -->
+    <update id="update" parameterType="com.shenxy.springboot.pojo.User">
+    update tb_user
+        set
+            user_name=#{userName},
+            password=#{password},
+            name=#{name},
+            age=#{age},
+            sex=#{sex},
+            birthday=#{birthday},
+            updated=now()
+        where id=#{id}
+</update>
+
+    <!-- find user -->
+    <select id="query" parameterType="int" resultType="com.shenxy.springboot.pojo.User">
+        SELECT * FROM tb_user WHERE ID=#{id}
+    </select>
+
+    <select id="queryAll" parameterType="int" resultMap="userMap">
+        SELECT * FROM tb_user
+    </select>
+
+    <!-- delete user -->
+    <delete id="delete" parameterType="int">
+        delete FROM  tb_user
+        where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
